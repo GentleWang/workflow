@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='GBK' ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%t] [%d{yyyy-MM-dd HH:mm:ss:sss z}] %5p %c{2}: %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+        </filter>
+    </appender>
+
+    <appender name="FILE-INFO" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="Append" value="false"/><!-- 默认值是true,即将消息增加到指定文件中，false指将消息覆盖指定的文件内容 -->
+        <param name="file" value="/export/logs/workFlow-info.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%t] [%d{yyyy-MM-dd HH:mm:ss:sss z}] %5p %c{2}: %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+        </filter>
+    </appender>
+
+    <appender name="FILE-ERROR" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="file" value="/export/logs/workFlow-error.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%t] [%d{yyyy-MM-dd HH:mm:ss:sss z}] %5p %c{2}: %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+            <!--<param name="LevelMax" value="FATAL "/>-->
+        </filter>
+    </appender>
+
+    <appender name="FILE-VELOCITY" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="file" value="/export/logs/workFlow-velocity.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%t] [%d{yyyy-MM-dd HH:mm:ss:sss z}] %5p %c{2}: %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+        </filter>
+    </appender>
+    
+    <appender name="FILE-SQL" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="file" value="/export/logs/workFlow-sql.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%t] [%d{yyyy-MM-dd HH:mm:ss:sss z}] %5p %c{2}: %m%n"/>
+        </layout>
+    </appender>
+
+	<appender name="FILE-FUNDFLOW" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<param name="file" value="/export/logs/workFlow-fundflow.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%t] [%d{yyyy-MM-dd HH:mm:ss:sss z}] %5p %c{2}: %m%n" />
+		</layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+        </filter>
+	</appender>
+       
+	    <category name="com.ibatis" additivity="false">
+	        <priority value="INFO"/>
+	        <appender-ref ref="FILE-SQL"/>
+	        <appender-ref ref="CONSOLE"/>
+	    </category>
+	    
+	    <category name="java.sql" additivity="false">
+	        <priority value="INFO"/>
+	        <appender-ref ref="FILE-SQL"/>
+	        <appender-ref ref="CONSOLE"/>
+	    </category>
+   
+    <category name="com.mybatis.common.jdbc.SimpleDataSource"
+		additivity="false">
+		<priority value="INFO" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE-SQL"/>
+	</category>
+	<category name="org.apache.ibatis.jdbc.ScriptRunner"
+		additivity="false">
+		<priority value="INFO" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE-SQL"/>
+	</category>
+	<category name="org.mybatis.spring.SqlSessionTemplate"
+		additivity="false">
+		<priority value="INFO" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE-SQL"/>
+	</category>
+	<category name="java.sql.Connection" additivity="false">
+		<priority value="INFO" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE-SQL"/>
+	</category>
+	<category name="java.sql.Statement" additivity="false">
+		<priority value="INFO" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE-SQL"/>
+	</category>
+	<category name="java.sql.PreparedStatement" additivity="false">
+		<priority value="INFO" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE-SQL"/>
+	</category>
+	
+      <category name="org.apache.velocity" additivity="false">
+        <priority value="ERROR"/>
+        <appender-ref ref="FILE-VELOCITY"/>
+    </category>
+    
+    <category name="com.jd.workFlow" additivity="true">
+		<priority value="INFO" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE-FUNDFLOW"/>
+	</category>
+	
+
+    <root>
+        <priority value="INFO"/>
+        <appender-ref ref="CONSOLE"/>
+        <!----><appender-ref ref="FILE-ERROR"/>
+        <appender-ref ref="FILE-SQL"/>
+        <appender-ref ref="FILE-INFO"/>
+    </root>
+</log4j:configuration>

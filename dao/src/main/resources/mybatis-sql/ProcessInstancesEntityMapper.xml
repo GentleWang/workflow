@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="jd.jr.workFlow.dao.ProcessInstancesEntityMapper" >
+  <resultMap id="resultMap" type="jd.jr.workFlow.model.ProcessInstancesEntity" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="bizID" property="bizID" jdbcType="VARCHAR" />
+    <result column="bizType" property="bizType" jdbcType="VARCHAR" />
+    <result column="system_Source_ID" property="systemSourceId" jdbcType="VARCHAR" />
+    <result column="process_status" property="processStatus" jdbcType="VARCHAR" />
+    <result column="process_intance_id" property="processIntanceId" jdbcType="VARCHAR" />
+    <result column="process_task_id" property="processTaskId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="allFields">
+    ID,bizID,bizType,system_Source_ID,process_status,process_intance_id,process_task_id,create_time,update_time
+  </sql>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from process_intances
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="ProcessIntancesEntity" useGeneratedKeys="true" keyProperty="ID" >
+    insert into process_intances (bizID, bizType,
+      system_Source_ID, process_status, process_intance_id, 
+      process_task_id, create_time, update_time
+      )
+    values (#{bizID,jdbcType=VARCHAR}, #{bizType,jdbcType=VARCHAR},
+      #{systemSourceId,jdbcType=VARCHAR}, #{processStatus,jdbcType=VARCHAR}, #{processIntanceId,jdbcType=VARCHAR}, 
+      #{processTaskId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="ProcessIntancesEntity" >
+    update process_intances
+    set bizID = #{bizID,jdbcType=VARCHAR},
+      bizType = #{bizType,jdbcType=VARCHAR},
+      system_Source_ID = #{systemSourceId,jdbcType=VARCHAR},
+      process_status = #{processStatus,jdbcType=VARCHAR},
+      process_intance_id = #{processIntanceId,jdbcType=VARCHAR},
+      process_task_id = #{processTaskId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="resultMap" parameterType="java.lang.String" >
+    select ID, bizID, bizType, system_Source_ID, process_status, process_intance_id, 
+    process_task_id, create_time, update_time
+    from process_intances
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="resultMap" >
+    select ID, bizID, bizType, system_Source_ID, process_status, process_intance_id, 
+    process_task_id, create_time, update_time
+    from process_intances
+  </select>
+
+  <select id="selectByParams" parameterType="ProcessIntancesEntity" resultMap="resultMap">
+    SELECT
+    <include refid="allFields"></include>
+    FROM
+    process_intances
+    <where>
+      1=1
+      <if test="bizType != null">
+        AND  bizType = #{bizType,jdbcType=VARCHAR}
+      </if>
+      <if test="systemSourceId != null">
+        AND system_source_id = #{systemSourceId,jdbcType=VARCHAR}
+      </if>
+      <if test="bizID != null">
+        AND bizID = #{bizID,jdbcType=VARCHAR}
+      </if>
+      <if test="processStatus != null">
+        AND process_status = #{processStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="processIntanceId != null">
+        AND process_intance_id = #{processIntanceId,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+
+
+</mapper>
