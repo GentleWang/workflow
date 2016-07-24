@@ -170,18 +170,26 @@ public class WorkFlowRunBiz {
             instanceID = intances.get(0).getProcessIntanceId();
         }
         //查询待办
-        List<Task> assignList = taskService.createTaskQuery().processInstanceId(instanceID)
+        List<Task> roleGroupList = taskService.createTaskQuery().processInstanceId(instanceID)
                 .taskTenantId(operateRequestBo.getSystemSourceID())
                 .taskCandidateGroup(operateRequestBo.getRoleGroupID()).list();
-        if(CollectionUtils.isEmpty(assignList)){// TODO: 2016/7/20 按照业务系统传入的角色ID处理，业务系统一定要保证传入的角色组正确
+        if(CollectionUtils.isEmpty(roleGroupList)){// TODO: 2016/7/20 按照业务系统传入的角色ID处理，业务系统一定要保证传入的角色组正确
+
             // TODO: 2016/7/20 如果使用角色组查询不到，使用UserID进行查询
-            LOG.info("查询不到流程ID："+instanceID+",roleGroupID："+operateRequestBo.getRoleGroupID()+"的代办任务节点。");
-            returnValueOfMethod.setSuccess(false);
-            returnValueOfMethod.setRespCode(ResponseCodeEnum.Error_200002.getCode());
-            returnValueOfMethod.setRespMessage(ResponseCodeEnum.Error_200002.getMessage());
-            return returnValueOfMethod;
+            List<Task> assignList = taskService.createTaskQuery().processInstanceId(instanceID)
+                    .taskTenantId(operateRequestBo.getSystemSourceID())
+                    .taskAssignee(operateRequestBo.getUserID()).list();
+            if(CollectionUtils.isEmpty(assignList)){
+                LOG.info("查询不到流程ID："+instanceID+",roleGroupID："+operateRequestBo.getRoleGroupID()+"的代办任务节点。");
+                returnValueOfMethod.setSuccess(false);
+                returnValueOfMethod.setRespCode(ResponseCodeEnum.Error_200002.getCode());
+                returnValueOfMethod.setRespMessage(ResponseCodeEnum.Error_200002.getMessage());
+                return returnValueOfMethod;
+            }else{
+                taskID = assignList.get(0).getId();
+            }
         }else{
-            taskID = assignList.get(0).getId();
+            taskID = roleGroupList.get(0).getId();
             LOG.info("当前流程实例节点ID是："+instanceID+":"+taskID);
         }
         //设置实例流转的参数
